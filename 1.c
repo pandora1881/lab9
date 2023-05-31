@@ -1,69 +1,51 @@
 #include <stdio.h>
 #include <string.h>
-#include <ctype.h>
 
-void замінитиВерхнійРегістр(char *str)
-{
-    int len = strlen(str);
+#define MAX_LENGTH 100
 
-    for (int i = 0; i < len; i++)
-    {
-        if (isupper(str[i]))
-        {
-            str[i] = tolower(str[i]);
-        }
-    }
-}
-
-void друкуватиНайдовшеСлово(char *str)
-{
-    char найдовшеСлово[100];
-    char слово[100];
-    int maxLen = 0;
-    int len = strlen(str);
+void replaceUpperCase(char *str) {
     int i = 0;
-
-    while (i < len)
-    {
-        int j = 0;
-        while (i < len && !isspace(str[i]))
-        {
-            слово[j] = str[i];
-            i++;
-            j++;
+    while (str[i] != '\0') {
+        if (str[i] >= 'A' && str[i] <= 'Z') {
+            str[i] = str[i] + 32;  // переводимо велику літеру у відповідну малу
         }
-        слово[j] = '\0';
-
-        if (j > maxLen)
-        {
-            maxLen = j;
-            strcpy(найдовшеСлово, слово);
-        }
-
-        while (i < len && isspace(str[i]))
-        {
-            i++;
-        }
+        i++;
     }
-
-    printf("Найдовше слово: %s\n", найдовшеСлово);
 }
 
-int main()
-{
-    char ввід[100];
+void printLongestWord(char *str) {
+    char longestWord[MAX_LENGTH] = "";
+    char currentWord[MAX_LENGTH] = "";
+    int i = 0, j = 0;
 
-    printf("Введіть рядок: ");
-    fgets(ввід, sizeof(ввід), stdin);
+    while (str[i] != '\0') {
+        if (str[i] != ' ') {
+            currentWord[j] = str[i];
+            j++;
+        } else {
+            currentWord[j] = '\0';
+            if (strlen(currentWord) > strlen(longestWord)) {
+                strcpy(longestWord, currentWord);
+            }
+            j = 0;
+        }
+        i++;
+    }
 
-    // Видалення крапки перенесення рядка в кінці
-    ввід[strcspn(ввід, "\n")] = '\0';
+    printf("Найдовше слово: %s\n", longestWord);
+}
 
-    // Заміна великих літер на малі
-    замінитиВерхнійРегістр(ввід);
+int main() {
+    char input[MAX_LENGTH];
 
-    // Друкувати найдовше слово
-    друкуватиНайдовшеСлово(ввід);
+    printf("Введіть текстовий рядок: ");
+    fgets(input, sizeof(input), stdin);
+    input[strcspn(input, "\n")] = '\0';  // видаляємо символ нового рядка з кінця рядка
+
+    replaceUpperCase(input);
+    printf("Текстовий рядок після заміни великих літер: %s\n", input);
+
+    printLongestWord(input);
 
     return 0;
 }
